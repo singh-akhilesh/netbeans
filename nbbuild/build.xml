@@ -116,13 +116,12 @@
             <isset property="metabuild.jsonurl"/>
         </not>
     </condition>
-    <!--<configureproxy connectTo="${metabuild.jsonurl}" hostProperty="proxyHost" portProperty="proxyPort"/>
+    <configureproxy connectTo="${metabuild.jsonurl}" hostProperty="proxyHost" portProperty="proxyPort"/>
     <setproxy proxyhost="${proxyHost}" proxyPort="${proxyPort}"/>
-    <get dest="${metabuild.releasejson}" skipexisting="false" src="${metabuild.jsonurl}" />-->
+    <get dest="${metabuild.releasejson}" skipexisting="false" src="${metabuild.jsonurl}" />
     <!-- read info from gitinfo.properties , if present in source bundle copy gitinfo-->
     <copy file="${nb_all}/nbbuild/gitinfo.properties" tofile="${nb_all}/nbbuild/build/gitinfo.properties" failonerror="false"/>
     <copy file="${nb_all}/nbbuild/netbeansrelease.properties" tofile="${nb_all}/nbbuild/build/netbeansrelease.properties" failonerror="false"/>
-    <copy file="${nb_all}/nbbuild/netbeansrelease.json" tofile="${nb_all}/nbbuild/build/netbeansrelease.json" failonerror="false"/>
     <!-- get branches and git information as previous not overrided this will take new-->
     <antcall target="getgitinformation" />
     <!-- javadoc content filtering -->
@@ -198,7 +197,8 @@ metabuild.hash=${metabuild.hash}</echo>
   <target name="getgitinformation" depends="-git.up,-git.down" />
   <target name="download-all-extbins" unless="ext.binaries.downloaded" depends="bootstrap">
     <echo>Downloading external binaries (*/external/ directories)...</echo>
-    <downloadbinaries cache="${binaries.cache}" server="${binaries.server}">
+    <!-- optionnal reporttofile used to speed resolving artefacts resolution for maven artefacts -->
+    <downloadbinaries cache="${binaries.cache}" server="${binaries.server}" reporttofile="${nb_all}/nbbuild/build/external.info" >
         <manifest dir="${nb_all}">
             <include name="**/external/binaries-list"/>
         </manifest>
@@ -2203,3 +2203,4 @@ It is possible to use -Ddebug.port=3234 -Ddebug.pause=y to start the system in d
     </target>
 
 </project>
+
